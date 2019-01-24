@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="app">
+    <label><input type="checkbox" v-on:change="toggleView"> Toggle Show and Hide</label>
+    <div v-if="seen">
+      <label>Name: <input type="text" v-model="name"></label>
+      <br>
+      <label>Job: <input type="text" v-model="job"></label>
+      <br>
+      <div>
+        <input type="range" max=20 v-model="range" v-on:change="rangeChanged">
+        <span>{{ percent }}%</span>
+      </div>
+
+      <ul>
+        <li>Name is {{ name }}</li>
+        <li>Job is {{ job }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="../DVue.js"></script>
+  <script src="example.js"></script>
+</body>
+</html>
