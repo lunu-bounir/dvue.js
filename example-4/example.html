@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/marked@0.3.6"></script>
+</head>
+<body>
+  <style>
+    body {
+      display: flex;
+    }
+    body>* {
+      flex: 1;
+    }
+    textarea {
+      height: calc(100vh - 22px);
+    }
+  </style>
+  <textarea include v-on:input="compile"></textarea>
+  <div include>{{ html }}</div>
+
+  <script src="../DVue.js"></script>
+  <script src="example.js"></script>
+</body>
+</html>

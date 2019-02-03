@@ -12,9 +12,9 @@ class DVue {
       }
     `;
     document.documentElement.appendChild(style);
-    //
-    const e = document.querySelector(app.el);
-    this.inspect(e);
+    // inspect
+    [...document.querySelectorAll(app.el)].forEach(e => this.inspect(e));
+    [...document.querySelectorAll(app.el)].forEach(e => this.attr(e));
   }
   inspect(parent) {
     for (const child of parent.childNodes) {
@@ -82,7 +82,22 @@ class DVue {
         const {value, name, parent} = this.eval(match);
         const node = document.createTextNode(value);
         fragment.appendChild(node);
-        this.observe(parent, name, val => node.nodeValue = val);
+        // expression
+        if (name[0] === '@') { // @expression(trigger,...)
+          const expression = name.substr(1).split('(')[0];
+          if (name.indexOf('(') !== -1 && name.indexOf(')') !== -1) {
+            const triggers = name.split('(')[1].slice(0, -1);
+            triggers.split(/\s*,\s*/).forEach(name => {
+              this.observe(parent, name, () => {
+                node.nodeValue = this.expressions[expression].apply(this);
+              });
+            });
+          }
+          node.nodeValue = this.expressions[expression].apply(this);
+        }
+        else {
+          this.observe(parent, name, val => node.nodeValue = val);
+        }
       }
     });
     node.parentElement.replaceChild(fragment, node);
@@ -105,13 +120,18 @@ class DVue {
       // v-on
       else if (attr.name.startsWith('v-on:')) {
         const key = attr.name.substr(5);
-        e.addEventListener(key, () => {
-          this.methods[attr.value].apply(this);
+        e.addEventListener(key, e => {
+          this.methods[attr.value].call(this, e);
         });
       }
       // v-model
       else if (attr.name === 'v-model') {
-        e.addEventListener('input', () => this[attr.value] = e.value);
+        if (e.type === 'text' || e.type === 'search') {
+          e.addEventListener('input', () => this[attr.value] = e.value);
+        }
+        else {
+          e.addEventListener('input', () => this[attr.value] = Number(e.value));
+        }
         const {value, name, parent} = this.eval(attr.value);
         e.value = value;
         this.observe(parent, name, value => e.value = value);

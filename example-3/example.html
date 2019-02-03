@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div>
+      <h1>How to use expressions</h1>
+      <ul>
+        <li>define an expression method inside app.data.expressions</li>
+        <li>define the expression in HTML prefixed with @</li>
+        <li>include all triggers inside parenthesis</li>
+      </ul>
+      <div include>
+        Number <input type="range" max=20 v-model="num-1">{{ num-1 }} x
+        Number <input type="range" max=20 v-model="num-2">{{ num-2 }}
+        <br>
+        = {{ @add }} (without any trigger)
+        <br>
+        = {{ @add(num-1, num-2) }} (with two triggers)
+      </div>
+    </div>
+  </div>
+
+  <script src="../DVue.js"></script>
+  <script src="example.js"></script>
+</body>
+</html>
